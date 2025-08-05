@@ -54,13 +54,13 @@ const Breadcrumb = () => {
               </svg>
             )}
             {item.current ? (
-              <span className="text-sm font-semibold text-gray-700 bg-gray-100 px-3 py-1 rounded-md">
+                                      <span className="text-sm font-semibold text-white bg-gray-600 dark:bg-gray-600 px-3 py-1 rounded-md">
                 {item.label}
               </span>
             ) : (
               <Link
                 to={item.path}
-                className="inline-flex items-center text-sm font-medium text-gray-600 hover:text-blue-700 hover:bg-blue-50 px-3 py-1 rounded-md transition-all duration-200"
+                className="inline-flex items-center text-sm font-medium text-gray-400 dark:text-gray-300 hover:text-blue-400 dark:hover:text-blue-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-1 rounded-md transition-all duration-200"
               >
                 {item.label}
               </Link>

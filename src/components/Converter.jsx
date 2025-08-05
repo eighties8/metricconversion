@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import Breadcrumb from './Breadcrumb';
 
 const Converter = ({ 
   title, 
@@ -14,7 +13,7 @@ const Converter = ({
   customConversion1to2,
   customConversion2to1
 }) => {
-  const [value1, setValue1] = useState('');
+  const [value1, setValue1] = useState('10');
   const [value2, setValue2] = useState('');
   const [lastChanged, setLastChanged] = useState(''); // Track which input was last changed
 
@@ -30,6 +29,19 @@ const Converter = ({
     const numValue = parseFloat(value);
     return numValue.toString();
   };
+
+  // Perform initial calculation when component mounts
+  useEffect(() => {
+    if (value1 && value1 !== '') {
+      const inputValue = parseFloat(value1);
+      if (!isNaN(inputValue)) {
+        const converted = customConversion1to2 
+          ? customConversion1to2(inputValue)
+          : inputValue * conversionRate;
+        setValue2(formatDisplayValue(converted));
+      }
+    }
+  }, []); // Empty dependency array means this runs once on mount
 
   // Note: Conversion logic moved to input handlers for immediate response
 
@@ -77,52 +89,87 @@ const Converter = ({
     setLastChanged('');
   };
 
+  const copyToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      // You could add a toast notification here if desired
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <Breadcrumb />
-      <div className="bg-white rounded-xl shadow-lg p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            {title}
-          </h1>
-          <p className="text-gray-600 text-lg">
-            {description}
-          </p>
-        </div>
+    <div className="max-w-4xl mx-auto px-4 py-4">
+      <div className="text-center mb-6">
+        <h1 className="text-4xl md:text-5xl font-bold mb-6 font-poppins">
+          <span className="text-[#333] dark:text-[#60a5fa]">{title}</span>
+        </h1>
+        <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          {description}
+        </p>
+      </div>
+
+      <div className="bg-gray-100 dark:bg-gray-800 rounded-xl shadow-2xl p-8 border border-gray-200 dark:border-gray-700">
 
         <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-8">
           <div className="flex-1 max-w-xs">
-            <label htmlFor="input1" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="input1" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               {unit1Label}
             </label>
-            <input
-              id="input1"
-              type="number"
-              value={value1}
-              onChange={handleValue1Change}
-              placeholder="Enter value"
-              step="any"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-            />
+            <div className="relative">
+              <input
+                id="input1"
+                type="number"
+                value={value1}
+                onChange={handleValue1Change}
+                placeholder="Enter value"
+                step="any"
+                className="w-full px-4 py-3 pr-12 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 transition-colors"
+              />
+              {value1 && (
+                <button
+                  onClick={() => copyToClipboard(value1)}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-blue-500 transition-colors"
+                  title="Copy to clipboard"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                </button>
+              )}
+            </div>
           </div>
 
-          <div className="text-2xl text-blue-600 font-bold">
+          <div className="text-2xl text-blue-600 dark:text-blue-400 font-bold">
             ⇄
           </div>
 
           <div className="flex-1 max-w-xs">
-            <label htmlFor="input2" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="input2" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               {unit2Label}
             </label>
-            <input
-              id="input2"
-              type="number"
-              value={value2}
-              onChange={handleValue2Change}
-              placeholder="Enter value"
-              step="any"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-            />
+            <div className="relative">
+              <input
+                id="input2"
+                type="number"
+                value={value2}
+                onChange={handleValue2Change}
+                placeholder="Enter value"
+                step="any"
+                className="w-full px-4 py-3 pr-12 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 transition-colors"
+              />
+              {value2 && (
+                <button
+                  onClick={() => copyToClipboard(value2)}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-blue-500 transition-colors"
+                  title="Copy to clipboard"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -136,8 +183,8 @@ const Converter = ({
         </div>
 
         {value1 && value2 && (
-          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
-            <p className="text-lg text-gray-900 text-center">
+          <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-lg">
+            <p className="text-lg text-gray-900 dark:text-white text-center">
               <span 
                 className="font-semibold cursor-help" 
                 title={`Full precision: ${getFullPrecision(
