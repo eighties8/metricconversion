@@ -38,6 +38,30 @@ const HomePage = () => {
     ]
   };
 
+  // Map unit values to display symbols for result text
+  const getUnitSymbol = (unit) => {
+    switch (unit) {
+      case 'c':
+        return '°C';
+      case 'f':
+        return '°F';
+      case 'k':
+        return 'K';
+      case 'l':
+        return 'L';
+      case 'ml':
+        return 'ml';
+      case 'floz':
+        return 'fl oz';
+      case 'lbs':
+        return 'lbs';
+      case 'stone':
+        return 'st';
+      default:
+        return unit; // m, cm, in, mm, km, mi, kg, g, oz, gal, etc.
+    }
+  };
+
   const conversionRates = {
     // Weight conversions
     'kg-lbs': 2.20462,
@@ -126,6 +150,11 @@ const HomePage = () => {
 
   const convert = (from, to, value) => {
     if (!value || isNaN(value)) return '';
+
+    // If units are the same, return the value unchanged (formatted)
+    if (from === to) {
+      return parseFloat(value).toFixed(2);
+    }
     
     const key = `${from}-${to}`;
     const rate = conversionRates[key];
@@ -148,6 +177,11 @@ const HomePage = () => {
 
   const getFullPrecision = (from, to, value) => {
     if (!value || isNaN(value)) return '';
+
+    // Same-unit full precision is just the input
+    if (from === to) {
+      return parseFloat(value).toString();
+    }
     
     const key = `${from}-${to}`;
     const rate = conversionRates[key];
@@ -301,23 +335,23 @@ const HomePage = () => {
       
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Hero Section */}
-        <div className="text-center mb-16">
-                                <h1 className="text-4xl md:text-5xl font-bold mb-6 font-poppins">
-                        <span className="text-[#333] dark:text-[#60a5fa]">Convert Units</span> <span className="text-gray-800 dark:text-white">Instantly</span>
-                      </h1>
-                      <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              <Link to="/cm-to-inches" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('cm'); setToUnit('in'); }}>cm to inches</Link>,{' '}
-              <Link to="/kg-to-lbs" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('kg'); setToUnit('lbs'); }}>kg to lbs</Link>,{' '}
-              <Link to="/cm-to-inches" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('mm'); setToUnit('in'); }}>mm to inches</Link>,{' '}
-              <Link to="/kg-to-lbs" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('lbs'); setToUnit('kg'); }}>lbs to kg</Link>,{' '}
-              <Link to="/millimeters-in-inch" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('mm'); setToUnit('in'); }}>millimeters in an inch</Link>,{' '}
-              <Link to="/fahrenheit-to-celsius" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('c'); setToUnit('f'); }}>celcius to farenheit</Link>,{' '}
-              <Link to="/grams-to-oz" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('g'); setToUnit('oz'); }}>grams to ounces</Link>,{' '}
-              <Link to="/cm-to-inches" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('cm'); setToUnit('in'); }}>conversion cm to inches</Link>,{' '}
-              <Link to="/kg-to-lbs" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('lbs'); setToUnit('kg'); }}>pound converter</Link>,{' '}
-              <Link to="/kg-to-lbs" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('kg'); setToUnit('lbs'); }}>kilos to pounds</Link>, {' '}
-              <Link to="/fahrenheit-to-celsius" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('c'); setToUnit('f'); }}>centigrade into fahrenheit</Link>
-            </p>
+        <div className="text-center mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 font-poppins">
+            <span className="text-[#333] dark:text-[#60a5fa]">Convert Units</span> <span className="text-gray-800 dark:text-white">Instantly</span>
+          </h1>
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <Link to="/cm-to-inches" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('cm'); setToUnit('in'); }}>cm to inches</Link>,{' '}
+            <Link to="/kg-to-lbs" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('kg'); setToUnit('lbs'); }}>kg to lbs</Link>,{' '}
+            <Link to="/cm-to-inches" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('mm'); setToUnit('in'); }}>mm to inches</Link>,{' '}
+            <Link to="/kg-to-lbs" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('lbs'); setToUnit('kg'); }}>lbs to kg</Link>,{' '}
+            <Link to="/millimeters-in-inch" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('mm'); setToUnit('in'); }}>millimeters in an inch</Link>,{' '}
+            <Link to="/fahrenheit-to-celsius" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('c'); setToUnit('f'); }}>celcius to farenheit</Link>,{' '}
+            <Link to="/grams-to-oz" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('g'); setToUnit('oz'); }}>grams to ounces</Link>,{' '}
+            <Link to="/cm-to-inches" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('cm'); setToUnit('in'); }}>conversion cm to inches</Link>,{' '}
+            <Link to="/kg-to-lbs" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('lbs'); setToUnit('kg'); }}>pound converter</Link>,{' '}
+            <Link to="/kg-to-lbs" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('kg'); setToUnit('lbs'); }}>kilos to pounds</Link>, {' '}
+            <Link to="/fahrenheit-to-celsius" className="text-[#333] dark:text-blue-400 hover:underline" onClick={() => { setFromUnit('c'); setToUnit('f'); }}>centigrade into fahrenheit</Link>
+          </p>
         </div>
 
         {/* Universal Converter */}
@@ -333,7 +367,7 @@ const HomePage = () => {
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-8">
             <div className="flex-1 max-w-xs">
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 From
               </label>
               <select
@@ -375,7 +409,7 @@ const HomePage = () => {
             </div>
 
             <div className="flex-1 max-w-xs">
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 To
               </label>
               <select
@@ -423,18 +457,18 @@ const HomePage = () => {
           </div>
 
           {fromValue && toValue && (
-            <div className="bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-lg">
-              <p className="text-lg text-white text-center">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-lg">
+              <p className="text-lg text-gray-900 dark:text-white text-center">
                 <span 
                   className="font-semibold cursor-help" 
                   title={`Full precision: ${getFullPrecision(fromUnit, toUnit, fromValue)}`}
                 >
-                  {fromValue}
+                  {fromValue} {getUnitSymbol(fromUnit)}
                 </span> = <span 
                   className="font-semibold cursor-help" 
                   title={`Full precision: ${getFullPrecision(toUnit, fromUnit, toValue)}`}
                 >
-                  {toValue}
+                  {toValue} {getUnitSymbol(toUnit)}
                 </span>
               </p>
             </div>
@@ -442,7 +476,7 @@ const HomePage = () => {
         </div>
 
         {/* Converter Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {converters.map((converter) => (
             <Link
               key={converter.path}
